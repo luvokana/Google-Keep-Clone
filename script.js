@@ -14,6 +14,7 @@ class App {
     this.$inactiveForm = document.querySelector(".inactive-form");
     this.$noteTitle = document.querySelector("#note-title");
     this.$noteText = document.querySelector("#note-text");
+    this.$notes = document.querySelector(".notes");
 
     this.addEventListeners();
   }
@@ -55,7 +56,7 @@ class App {
     if(text != "") {
       const newNote = new Note(cuid(), title, text);
       this.notes = [...this.notes, newNote];
-      this.displayNotes();
+    this.displayNotes();
     }
     
   }
@@ -71,13 +72,12 @@ class App {
   }
 
   displayNotes() {
-    this.notes.map((note) =>
-      console.log(`
+    this.$notes.innerHTML = this.notes.map((note) =>
+    `
         ID: ${note.id}
         Title: ${note.title}
         Text: ${note.text}
         `)
-    );
   }
 
   deleteNote(id) {
