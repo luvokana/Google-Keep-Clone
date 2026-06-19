@@ -211,7 +211,7 @@ input:focus {
 display: flex;
 justify-content: center;
 flex-wrap: wrap; 
-padding: 0 50px;
+padding: 0 100px;
 }
 
 .note {

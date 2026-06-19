@@ -54,12 +54,14 @@ class App {
   }
 
   addNote({ title, text }) {
-    if(text != "") {
-      const newNote = new Note(cuid(), title, text);
-      this.notes = [...this.notes, newNote];
+  if (text != "") {
+    const newNote = new Note(cuid(), title, text);
+    this.notes = [...this.notes, newNote];
+
+    console.log(this.notes); // check if note is added
+
     this.displayNotes();
-    }
-    
+   }
   }
 
   editNote(id, { title, text }) {
