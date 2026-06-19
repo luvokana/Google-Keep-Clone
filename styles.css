@@ -173,7 +173,7 @@ input:focus {
 }
 
 .active-form {
-
+  display: none;
 }
 
 .active-form form {
@@ -210,6 +210,8 @@ input:focus {
 .notes {
 display: flex;
 justify-content: center;
+flex-wrap: wrap; 
+padding: 0 50px;
 }
 
 .note {
