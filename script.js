@@ -70,7 +70,7 @@ class App {
       this.$modal.classList.add("open-modal");
     }
   }
-
+  
   addNote({ title, text }) {
     if (text != "") {
       const newNote = new Note(cuid(), title, text);
