@@ -38,6 +38,38 @@ class App {
     });
   }
 
+  addEventListeners() {
+  document.body.addEventListener("click", (event) => {
+    this.handleFormClick(event);
+    this.openModal(event);
+  });
+
+  this.$form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const title = this.$noteTitle.value;
+    const text = this.$noteText.value;
+    this.addNote({ title, text });
+    this.closeActiveForm();
+  });
+
+  // NEW: close modal when clicking outside modal-content
+  this.$modal.addEventListener("click", (event) => {
+    if (event.target === this.$modal) {
+      this.closeModal();
+    }
+  });
+
+  // NEW: close modal when clicking the modal's close button
+  document.querySelector("#modal-form .close-btn").addEventListener("click", (event) => {
+    event.preventDefault();
+    this.closeModal();
+  });
+}
+
+closeModal() {
+  this.$modal.classList.remove("open-modal");
+}
+
   handleFormClick(event) {
     const isActiveFormClickedOn = this.$activeForm.contains(event.target);
     const isInactiveFormClickedOn = this.$inactiveForm.contains(event.target);
