@@ -16,13 +16,17 @@ class App {
     this.$noteText = document.querySelector("#note-text");
     this.$notes = document.querySelector(".notes");
     this.$form = document.querySelector("#form");
+    this.$modal = document.querySelector(".modal");
 
     this.addEventListeners();
+    this.displayNotes();
+    
   }
 
   addEventListeners() {
     document.body.addEventListener("click", (event) => {
       this.handleFormClick(event);
+      this.openModal(event);
     });
 
     this.$form.addEventListener("submit", (event) => {
@@ -61,6 +65,12 @@ class App {
     this.$noteTitle.value = "";
   }
 
+  openModal(event) {
+    if(event.target.closest(".note")) {
+      this.$modal.classList.add("open-modal");
+    }
+  }
+
   addNote({ title, text }) {
     if (text != "") {
       const newNote = new Note(cuid(), title, text);
@@ -77,6 +87,22 @@ class App {
       }
       return note;
     });
+  }
+
+ handleMouseOverNote(element) {
+    const $note = document.querySelector("#"+element.id);
+    const $checkNote = $note.querySelector(".check-circle");
+    const $noteFooter = $note.querySelector(".note-footer");
+    $checkNote.style.visibility = "visible";
+    $noteFooter.style.visibility = "visible";
+  }
+
+  handleMouseOutNote(element) {
+    const $note = document.querySelector("#"+element.id);
+    const $checkNote = $note.querySelector(".check-circle");
+    const $noteFooter = $note.querySelector(".note-footer");
+    $checkNote.style.visibility = "hidden";
+    $noteFooter.style.visibility = "hidden";
   }
 
   displayNotes() {
