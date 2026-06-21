@@ -9,6 +9,7 @@ class Note {
 class App {
   constructor() {
       this.notes = [];
+      this.$selectedNoteId = "";
 
       this.$activeForm = document.querySelector(".active-form");
       this.$inactiveForm = document.querySelector(".inactive-form");
@@ -57,6 +58,12 @@ class App {
     // NEW: close modal when clicking outside modal-content
     this.$modal.addEventListener("click", (event) => {
       if (event.target === this.$modal) {
+        this.editNote(this.$selectedNoteId, {
+        title: this.$modalTitle.value,
+        text: this.$modalText.value,
+        });
+        this.displayNotes();
+        this.closeModal();
         this.closeModal();
       }
     });
@@ -64,8 +71,21 @@ class App {
     // NEW: close modal when clicking the modal's close button
     document.querySelector("#modal-form .close-btn").addEventListener("click", (event) => {
       event.preventDefault();
+      this.editNote(this.$selectedNoteId, {
+        title: this.$modalTitle.value,
+        text: this.$modalText.value,
+      });
+      this.displayNotes();
       this.closeModal();
     });
+  }
+
+  saveModalChanges() {
+    this.editNote(this.$selectedNoteId, {
+      title: this.$modalTitle.value,
+      text: this.$modalText.value,
+    });
+    this.displayNotes();
   }
 
   closeModal() {
@@ -102,11 +122,13 @@ class App {
   openModal(event) {
     const $selectedNote = event.target.closest(".note");
     if($selectedNote) {
+      this.$selectedNoteId = $selectedNote.id;
       this.$modalTitle.value = $selectedNote.children[1].innerHTML;
       this.$modalText.value = $selectedNote.children[2].innerHTML;
       this.$modal.classList.add("open-modal");
     }
   }
+
   
   addNote({ title, text }) {
     if (text != "") {
