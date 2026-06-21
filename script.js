@@ -8,22 +8,39 @@ class Note {
 
 class App {
   constructor() {
-    this.notes = [];
+      this.notes = [];
 
-    this.$activeForm = document.querySelector(".active-form");
-    this.$inactiveForm = document.querySelector(".inactive-form");
-    this.$noteTitle = document.querySelector("#note-title");
-    this.$noteText = document.querySelector("#note-text");
-    this.$notes = document.querySelector(".notes");
-    this.$form = document.querySelector("#form");
-    this.$modal = document.querySelector(".modal");
+      this.$activeForm = document.querySelector(".active-form");
+      this.$inactiveForm = document.querySelector(".inactive-form");
+      this.$noteTitle = document.querySelector("#note-title");
+      this.$noteText = document.querySelector("#note-text");
+      this.$notes = document.querySelector(".notes");
+      this.$form = document.querySelector("#form");
+      this.$modal = document.querySelector(".modal");
+       this.$modalTitle = document.querySelector("#modal-title");
+      this.$modalText = document.querySelector("#modal-text");
 
-    this.addEventListeners();
-    this.displayNotes();
-    
-  }
+      this.addEventListeners();
+      this.displayNotes();
+      
+    }
 
-  addEventListeners() {
+    addEventListeners() {
+      document.body.addEventListener("click", (event) => {
+        this.handleFormClick(event);
+        this.openModal(event);
+      });
+
+      this.$form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const title = this.$noteTitle.value;
+        const text = this.$noteText.value;
+        this.addNote({ title, text });
+        this.closeActiveForm();
+      });
+    }
+
+    addEventListeners() {
     document.body.addEventListener("click", (event) => {
       this.handleFormClick(event);
       this.openModal(event);
@@ -36,39 +53,24 @@ class App {
       this.addNote({ title, text });
       this.closeActiveForm();
     });
+
+    // NEW: close modal when clicking outside modal-content
+    this.$modal.addEventListener("click", (event) => {
+      if (event.target === this.$modal) {
+        this.closeModal();
+      }
+    });
+
+    // NEW: close modal when clicking the modal's close button
+    document.querySelector("#modal-form .close-btn").addEventListener("click", (event) => {
+      event.preventDefault();
+      this.closeModal();
+    });
   }
 
-  addEventListeners() {
-  document.body.addEventListener("click", (event) => {
-    this.handleFormClick(event);
-    this.openModal(event);
-  });
-
-  this.$form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const title = this.$noteTitle.value;
-    const text = this.$noteText.value;
-    this.addNote({ title, text });
-    this.closeActiveForm();
-  });
-
-  // NEW: close modal when clicking outside modal-content
-  this.$modal.addEventListener("click", (event) => {
-    if (event.target === this.$modal) {
-      this.closeModal();
-    }
-  });
-
-  // NEW: close modal when clicking the modal's close button
-  document.querySelector("#modal-form .close-btn").addEventListener("click", (event) => {
-    event.preventDefault();
-    this.closeModal();
-  });
-}
-
-closeModal() {
-  this.$modal.classList.remove("open-modal");
-}
+  closeModal() {
+    this.$modal.classList.remove("open-modal");
+  }
 
   handleFormClick(event) {
     const isActiveFormClickedOn = this.$activeForm.contains(event.target);
@@ -98,7 +100,10 @@ closeModal() {
   }
 
   openModal(event) {
-    if(event.target.closest(".note")) {
+    const $selectedNote = event.target.closest(".note");
+    if($selectedNote) {
+      this.$modalTitle.value = $selectedNote.children[1].innerHTML;
+      this.$modalText.value = $selectedNote.children[2].innerHTML;
       this.$modal.classList.add("open-modal");
     }
   }
