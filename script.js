@@ -8,40 +8,24 @@ class Note {
 
 class App {
   constructor() {
-      this.notes = [];
-      this.$selectedNoteId = "";
+    this.notes = [];
+    this.$selectedNoteId = "";
 
-      this.$activeForm = document.querySelector(".active-form");
-      this.$inactiveForm = document.querySelector(".inactive-form");
-      this.$noteTitle = document.querySelector("#note-title");
-      this.$noteText = document.querySelector("#note-text");
-      this.$notes = document.querySelector(".notes");
-      this.$form = document.querySelector("#form");
-      this.$modal = document.querySelector(".modal");
-       this.$modalTitle = document.querySelector("#modal-title");
-      this.$modalText = document.querySelector("#modal-text");
+    this.$activeForm = document.querySelector(".active-form");
+    this.$inactiveForm = document.querySelector(".inactive-form");
+    this.$noteTitle = document.querySelector("#note-title");
+    this.$noteText = document.querySelector("#note-text");
+    this.$notes = document.querySelector(".notes");
+    this.$form = document.querySelector("#form");
+    this.$modal = document.querySelector(".modal");
+    this.$modalTitle = document.querySelector("#modal-title");
+    this.$modalText = document.querySelector("#modal-text");
 
-      this.addEventListeners();
-      this.displayNotes();
-      
-    }
+    this.addEventListeners();
+    this.displayNotes();
+  }
 
-    addEventListeners() {
-      document.body.addEventListener("click", (event) => {
-        this.handleFormClick(event);
-        this.openModal(event);
-      });
-
-      this.$form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        const title = this.$noteTitle.value;
-        const text = this.$noteText.value;
-        this.addNote({ title, text });
-        this.closeActiveForm();
-      });
-    }
-
-    addEventListeners() {
+  addEventListeners() {
     document.body.addEventListener("click", (event) => {
       this.handleFormClick(event);
       this.openModal(event);
@@ -55,28 +39,30 @@ class App {
       this.closeActiveForm();
     });
 
-    // NEW: close modal when clicking outside modal-content
+    // Close modal when clicking outside
     this.$modal.addEventListener("click", (event) => {
       if (event.target === this.$modal) {
-        this.editNote(this.$selectedNoteId, {
-        title: this.$modalTitle.value,
-        text: this.$modalText.value,
-        });
-        this.displayNotes();
-        this.closeModal();
+        this.saveModalChanges();
         this.closeModal();
       }
     });
 
-    // NEW: close modal when clicking the modal's close button
+    // Close modal via close button
     document.querySelector("#modal-form .close-btn").addEventListener("click", (event) => {
       event.preventDefault();
-      this.editNote(this.$selectedNoteId, {
-        title: this.$modalTitle.value,
-        text: this.$modalText.value,
-      });
-      this.displayNotes();
+      this.saveModalChanges();
       this.closeModal();
+    });
+
+    // DELETE: moved inside addEventListeners where it belongs
+    this.$notes.addEventListener("click", (event) => {
+      const $tooltip = event.target.closest("[data-action='delete']");
+      if ($tooltip) {
+        event.stopPropagation(); // prevent openModal from firing
+        const $note = $tooltip.closest(".note");
+        this.deleteNote($note.id);
+        this.displayNotes();
+      }
     });
   }
 
@@ -121,7 +107,7 @@ class App {
 
   openModal(event) {
     const $selectedNote = event.target.closest(".note");
-    if($selectedNote) {
+    if ($selectedNote) {
       this.$selectedNoteId = $selectedNote.id;
       this.$modalTitle.value = $selectedNote.children[1].innerHTML;
       this.$modalText.value = $selectedNote.children[2].innerHTML;
@@ -129,7 +115,6 @@ class App {
     }
   }
 
-  
   addNote({ title, text }) {
     if (text != "") {
       const newNote = new Note(cuid(), title, text);
@@ -148,8 +133,8 @@ class App {
     });
   }
 
- handleMouseOverNote(element) {
-    const $note = document.querySelector("#"+element.id);
+  handleMouseOverNote(element) {
+    const $note = document.querySelector("#" + element.id);
     const $checkNote = $note.querySelector(".check-circle");
     const $noteFooter = $note.querySelector(".note-footer");
     $checkNote.style.visibility = "visible";
@@ -157,7 +142,7 @@ class App {
   }
 
   handleMouseOutNote(element) {
-    const $note = document.querySelector("#"+element.id);
+    const $note = document.querySelector("#" + element.id);
     const $checkNote = $note.querySelector(".check-circle");
     const $noteFooter = $note.querySelector(".note-footer");
     $checkNote.style.visibility = "hidden";
@@ -167,49 +152,34 @@ class App {
   displayNotes() {
     this.$notes.innerHTML = this.notes
       .map(
-        (note) =>
-          `
+        (note) => `
         <div class="note" id="${note.id}">
-          <span class="material-symbols-outlined check-circle"
-            >check_circle</span
-          >
+          <span class="material-symbols-outlined check-circle">check_circle</span>
           <div class="title">${note.title}</div>
           <div class="text">${note.text}</div>
           <div class="note-footer">
             <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >add_alert</span
-              >
+              <span class="material-symbols-outlined hover small-icon">add_alert</span>
               <span class="tooltip-text">Remind me</span>
             </div>
             <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >person_add</span
-              >
+              <span class="material-symbols-outlined hover small-icon">person_add</span>
               <span class="tooltip-text">Collaborator</span>
             </div>
             <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >palette</span
-              >
+              <span class="material-symbols-outlined hover small-icon">palette</span>
               <span class="tooltip-text">Change Color</span>
             </div>
             <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >image</span
-              >
+              <span class="material-symbols-outlined hover small-icon">image</span>
               <span class="tooltip-text">Add Image</span>
             </div>
-            <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >archive</span
-              >
-              <span class="tooltip-text">Archive</span>
+            <div class="tooltip" data-action="delete">
+              <span class="material-symbols-outlined hover small-icon">archive</span>
+              <span class="tooltip-text">Delete</span>
             </div>
             <div class="tooltip">
-              <span class="material-symbols-outlined hover small-icon"
-                >more_vert</span
-              >
+              <span class="material-symbols-outlined hover small-icon">more_vert</span>
               <span class="tooltip-text">More</span>
             </div>
           </div>
