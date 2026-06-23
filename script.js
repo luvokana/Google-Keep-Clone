@@ -5,7 +5,6 @@ class Note {
     this.text = text;
   }
 }
-
 class App {
   constructor() {
     this.notes = [];
@@ -20,6 +19,7 @@ class App {
     this.$modal = document.querySelector(".modal");
     this.$modalTitle = document.querySelector("#modal-title");
     this.$modalText = document.querySelector("#modal-text");
+    this.$sidebar = document.querySelector(".sidebar");
 
     this.addEventListeners();
     this.displayNotes();
@@ -39,7 +39,6 @@ class App {
       this.closeActiveForm();
     });
 
-    // Close modal when clicking outside
     this.$modal.addEventListener("click", (event) => {
       if (event.target === this.$modal) {
         this.saveModalChanges();
@@ -47,14 +46,12 @@ class App {
       }
     });
 
-    // Close modal via close button
     document.querySelector("#modal-form .close-btn").addEventListener("click", (event) => {
       event.preventDefault();
       this.saveModalChanges();
       this.closeModal();
     });
 
-    // DELETE: moved inside addEventListeners where it belongs
     this.$notes.addEventListener("click", (event) => {
       const $tooltip = event.target.closest("[data-action='delete']");
       if ($tooltip) {
@@ -63,6 +60,14 @@ class App {
         this.deleteNote($note.id);
         this.displayNotes();
       }
+    });
+
+    this.$sidebar.addEventListener("mouseover", () => {
+      this.handleToggleSidebar(true);
+    });
+
+    this.$sidebar.addEventListener("mouseout", () => {
+      this.handleToggleSidebar(false);
     });
   }
 
@@ -147,6 +152,10 @@ class App {
     const $noteFooter = $note.querySelector(".note-footer");
     $checkNote.style.visibility = "hidden";
     $noteFooter.style.visibility = "hidden";
+  }
+
+  handleToggleSidebar(isHovering) {
+    this.$sidebar.style.width = isHovering ? "250px" : "60px";
   }
 
   displayNotes() {
