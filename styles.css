@@ -97,7 +97,7 @@ input:focus {
     top: 64px;
     display: flex;
     flex-direction: column;
-    margin-left: 18px;
+    margin-left: 15px;
     margin-top: 5px;
     color: #5f6368;
     width: 60px;
@@ -117,6 +117,10 @@ input:focus {
     padding: 3px;
     display: flex;
     align-items: center;
+}
+
+.sidebar-item {
+  cursor: pointer;
 }
 
 .sidebar-item:hover {

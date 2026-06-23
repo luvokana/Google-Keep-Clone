@@ -69,6 +69,14 @@ class App {
     this.$sidebar.addEventListener("mouseout", () => {
       this.handleToggleSidebar(false);
     });
+
+    document.querySelector(".material-symbols-outlined.hover").addEventListener("click", () => {
+      if (this.$sidebar.style.width === "250px") {
+        this.$sidebar.style.width = "60px";
+      } else {
+        this.$sidebar.style.width = "250px";
+      }
+    });
   }
 
   saveModalChanges() {
