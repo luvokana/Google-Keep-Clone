@@ -102,6 +102,7 @@ input:focus {
     color: #5f6368;
     width: 60px;
     overflow-x: hidden;
+    transition: width 0.3s ease;
 }
 .active {
     background-color: #fef0c3;
@@ -116,6 +117,13 @@ input:focus {
     padding: 3px;
     display: flex;
     align-items: center;
+}
+
+.sidebar-item:hover {
+  background-color: #e8eaed;
+  border-radius: 0 25px 25px 0;
+  margin-left: -16px;
+  padding-left: 16px;
 }
 
 .sidebar-item .sidebar-text {
@@ -226,6 +234,7 @@ padding: 0 100px;
 
 .note:hover {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.302), 0 2px 6px 2px rgba(60,64,67,0.149);
+  box-shadow: rgb(95, 99, 104);
 }
 
 .note:hover .note-footer {
